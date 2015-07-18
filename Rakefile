@@ -1,21 +1,15 @@
+require 'rake'
+require 'rspec/core/rake_task'
 
-task default: "test"
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = 'spec/*/*_spec.rb'
+end
 
-desc "Run all tests"
-task all_tests: [
-  :foodcritic, :chefspec
-]
+task default: :spec
 
-# rubocop style checker
-require "rubocop/rake_task"
-RuboCop::RakeTask.new
-
-# foodcritic chef lint
-require "foodcritic"
-FoodCritic::Rake::LintTask.new
-
-# chefspec unit tests
-require "rspec/core/rake_task"
-RSpec::Core::RakeTask.new(:chefspec) do |t|
-  t.rspec_opts = "--color --format progress"
+begin
+  require 'kitchen/rake_tasks'
+  Kitchen::RakeTasks.new
+rescue LoadError
+  puts '>>>>> Kitchen gem not loaded, omitting tasks' unless ENV['CI']
 end
