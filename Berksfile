@@ -14,4 +14,6 @@ cookbook 'timezone-ii'
 
 cookbook 'nfs'
 
-
+group :wrapper do
+  cookbook 'w_nfs', path: './'
+end
