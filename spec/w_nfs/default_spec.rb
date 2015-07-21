@@ -8,7 +8,7 @@ describe 'w_nfs::default' do
   end
   
   it 'installs a apt_package nfs-kernel-server' do
-    expect(chef_run).to install_apt_package('nfs-kernel-server')
+    expect(chef_run).to install_package('nfs-kernel-server')
   end
 
   it 'creates a directory /exports and /exports/data' do
