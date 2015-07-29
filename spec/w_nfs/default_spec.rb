@@ -6,8 +6,8 @@ describe 'w_nfs::default' do
       node.set['nfs']['network'] = '172.31.0.0/16'
 	  end.converge(described_recipe)
   end
-  
-  it 'installs a apt_package nfs-kernel-server' do
+
+  it 'installs a package nfs-kernel-server' do
     expect(chef_run).to install_package('nfs-kernel-server')
   end
 
@@ -19,7 +19,7 @@ describe 'w_nfs::default' do
   it 'includes recipe nfs::server4' do
     expect(chef_run).to include_recipe('nfs::server4')
   end
-  
+
   it 'creates /etc/exports and add exports' do
     expect(chef_run).to create_nfs_export('/exports').with(network: '172.31.0.0/16', writeable: true, sync: false, options: ['insecure', 'no_subtree_check'])
     expect(chef_run).to create_nfs_export('/exports/data').with(network: '172.31.0.0/16', writeable: true, sync: false, options: ['insecure', 'no_subtree_check'])
@@ -34,5 +34,5 @@ describe 'w_nfs::default' do
     	expect(chef_run).to allow_firewall_rule("nfs port #{listen_port}").with(port: listen_port, protocol: :tcp)
     end
   end
-    
+
 end
