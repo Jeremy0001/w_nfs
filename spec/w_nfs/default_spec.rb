@@ -4,6 +4,7 @@ describe 'w_nfs::default' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['nfs']['network'] = '172.31.0.0/16'
+      node.set['nfs']['subtree_enabled'] = true
 	  end.converge(described_recipe)
   end
 
@@ -13,7 +14,7 @@ describe 'w_nfs::default' do
 
   it 'creates a directory /exports and /exports/data' do
     expect(chef_run).to create_directory('/exports').with(owner: 'root', group: 'root', mode: 00777)
-    expect(chef_run).to create_directory('/exports/data')#.with(owner: 'www-data', group: 'www-data')
+    expect(chef_run).to create_directory('/exports/data').with(owner: 'www-data', group: 'www-data')
   end
 
   it 'includes recipe nfs::server4' do
