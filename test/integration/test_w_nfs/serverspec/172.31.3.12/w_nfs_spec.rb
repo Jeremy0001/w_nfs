@@ -21,7 +21,7 @@ if interface('eth1').has_ipv4_address?('172.31.3.12')
 
     describe 'file should be synced between client & server '\
              'with www-data as owner' do
-      describe file('/data/testfile1') do
+      describe file('/exports/data/testfile1') do
         it { should be_file }
         it { should be_owned_by 'www-data' }
       end

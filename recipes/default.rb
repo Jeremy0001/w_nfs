@@ -12,12 +12,10 @@ directory node['nfs']['directory'] do
   mode 00777
 end
 
-#need to uncomment when needed
-directory node['nfs']['directory'] + node['nfs']['subtree'] #do
-  #owner node['nfs']['idmap']['user']
-  #group node['nfs']['idmap']['group']
-  #mode 00777
-#end
+directory node['nfs']['directory'] + node['nfs']['subtree'] do
+  owner 'www-data'
+  group 'www-data'
+end
 
 include_recipe 'nfs::server4'
 
@@ -25,16 +23,16 @@ nfs_export node['nfs']['directory'] do
   network node['nfs']['network']
   writeable true
   sync false
-  anonuser 'root'
-  anongroup 'root'
   options %w( insecure no_subtree_check )
 end
 
-nfs_export node['nfs']['directory'] + node['nfs']['subtree'] do
-  network node['nfs']['network']
-  writeable true
-  sync false
-  options %w( insecure no_subtree_check )
+if node['nfs']['subtree_enabled']
+  nfs_export node['nfs']['directory'] + node['nfs']['subtree'] do
+    network node['nfs']['network']
+    writeable true
+    sync false
+    options %w( insecure no_subtree_check )
+  end
 end
 
 firewall 'ufw' do
