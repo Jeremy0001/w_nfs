@@ -1,15 +1,12 @@
-#
-# Cookbook Name:: w_nfs
-# Recipe:: client
-#
-
 include_recipe 'nfs::client4'
 
-directory node['nfs']['subtree'] do
-  owner 'root'
-  group 'root'
-  mode 00777
-end
+#need to uncomment when needed
+directory node['nfs']['subtree'] #do
+  #owner node['nfs']['idmap']['user']
+  #group node['nfs']['idmap']['group']
+  #mode 00777
+  #not_if "ls #{node['nfs']['subtree']}"
+#end
 
 # This is to resolve slow network connection and are not establishing mount at reboot https://help.ubuntu.com/community/NFSv4Howto
 mount node['nfs']['subtree'] do
@@ -23,19 +20,10 @@ end
 mount_subtree = <<EOF
 #!/bin/sh -e
 sleep 5
-mount /data
+mount #{node['nfs']['subtree']}
 exit 0
 EOF
 
 file '/etc/rc.local' do
   content mount_subtree
 end
-
-# This is to mount nfs exports on boot via cron
-#include_recipe 'cron'
-#
-#cron_d "mount_nfs_on_boot" do
-#  predefined_value '@reboot'
-#  command "mount -t nfs #{node['nfs']['nfs_server_ip']}:/exports/data /data -orw"
-#  user 'root'
-#end
