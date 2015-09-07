@@ -2,7 +2,6 @@
 # Cookbook Name:: w_nfs
 # Recipe:: default
 
-
 node.override['nfs']['packages'] = %w( nfs-kernel-server )
 node.override['nfs']['threads'] = 16 * node['cpu']['total']
 
@@ -35,14 +34,10 @@ if node['nfs']['subtree_enabled']
   end
 end
 
-firewall 'ufw' do
-  action :enable
-end
+firewall 'default'
 
 [node['nfs']['port']['default'], node['nfs']['port']['statd'], node['nfs']['port']['statd_out'], node['nfs']['port']['mountd'], node['nfs']['port']['lockd'], node['nfs']['port']['rquotad']].each do |nfs_port|
 	firewall_rule "nfs port #{nfs_port}" do
-	  port     nfs_port
-	  protocol :tcp
-	  action   :allow
+	  port  nfs_port
 	end
 end

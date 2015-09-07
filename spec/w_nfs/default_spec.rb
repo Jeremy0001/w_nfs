@@ -27,13 +27,12 @@ describe 'w_nfs::default' do
   end
 
   it 'enables firewall' do
-  	expect(chef_run).to enable_firewall('ufw')
+  	expect(chef_run).to install_firewall('default')
   end
 
   [2049, 32765, 32766, 32767, 32768, 32769].each do |listen_port|
   	it "runs resoruce firewall_rule to open port #{listen_port}" do
-    	expect(chef_run).to allow_firewall_rule("nfs port #{listen_port}").with(port: listen_port, protocol: :tcp)
+    	expect(chef_run).to create_firewall_rule("nfs port #{listen_port}").with(port: listen_port)
     end
   end
-
 end
