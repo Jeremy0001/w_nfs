@@ -1,0 +1,3 @@
+[submodule "test/integration/test_w_nfs"]
+	path = test/integration/test_w_nfs
+	url = https://github.com/haapp/serverspec-w_nfs.git
