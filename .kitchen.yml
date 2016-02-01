@@ -1,35 +1,33 @@
+#<% require 'kitchen-sync' %>
+#<% time = Time.new.strftime("%F %H:%M") %>
 ---
 driver:
   name: vagrant
 
 provisioner:
   name: chef_zero
+  environments_path: environments
+  roles_path: test/fixtures/roles
+  data_bags_path: test/fixtures/data_bags
+  client_rb:
+    environment: testkitchen
 
 platforms:
-  - name: nfs-server-ubuntu-12.04
-    run_list:
-      - recipe[uv_nfs::default]
-    attributes:
-      nfs:
-        network: '192.168.33.0/24'
-    driver:
-      box: ubuntu-12.04
-      box_url: https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box
-      network:
-      - ["private_network", {ip: "192.168.33.33"}]
-  - name: nfs-client-ubuntu-12.04
-    run_list:
-      - recipe[uv_nfs::client]
-    attributes:
-      nfs:
-        nfs_server_ip: '192.168.33.33'
-    driver:
-      box: ubuntu-12.04
-      box_url: https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box
-      network:
-      - ["private_network", {ip: "192.168.33.32"}]
+  - name: ubuntu-12.04
+  - name: ubuntu-14.04
 
 suites:
-  - name: uv_nfs
+  - name: nfs-server
     run_list:
-    attributes:
+      - role[w_common_role]
+      - role[w_nfs_role]
+    driver:
+      network:
+      - ["private_network", {ip: "172.31.7.12"}]
+  - name: nfs-client
+    run_list:
+      - role[w_common_role]
+      - recipe[w_nfs::client]
+    driver:
+      network:
+      - ["private_network", {ip: "172.31.3.12"}]

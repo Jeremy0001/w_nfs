@@ -12,6 +12,10 @@ describe 'w_nfs::default' do
     expect(chef_run).to install_package('nfs-kernel-server')
   end
 
+  it 'modify user shell for www-data' do
+    expect(chef_run).to modify_user('www-data').with(shell: '/bin/bash')
+  end
+
   it 'creates a directory /exports and /exports/data' do
     expect(chef_run).to create_directory('/exports').with(owner: 'root', group: 'root', mode: 00777)
     expect(chef_run).to create_directory('/exports/data').with(owner: 'www-data', group: 'www-data')

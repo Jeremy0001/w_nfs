@@ -6,6 +6,11 @@ directory node['nfs']['directory'] do
   mode 00777
 end
 
+user 'www-data' do
+  shell '/bin/bash'
+  action :modify
+end
+
 if node['nfs']['subtree_enabled']
   directory node['nfs']['subtree'] do
     owner 'www-data'
@@ -42,4 +47,8 @@ EOF
 
 file '/etc/rc.local' do
   content mount
+end
+
+firewall_rule 'nfs port' do
+  port node['nfs']['port']['default']
 end
