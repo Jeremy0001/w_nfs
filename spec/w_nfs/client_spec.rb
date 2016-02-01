@@ -16,6 +16,10 @@ describe 'w_nfs::client' do
     expect(chef_run).to create_directory('/exports').with(owner: 'root', group: 'root', mode: 00777)
   end
 
+  it 'modify user shell for www-data' do
+    expect(chef_run).to modify_user('www-data').with(shell: '/bin/bash')
+  end
+
   it 'creates a directory /data' do
     expect(chef_run).to create_directory('/data').with(owner: 'www-data', group: 'www-data', mode: 00777)
   end
@@ -23,7 +27,7 @@ describe 'w_nfs::client' do
   it 'enables a mount /exports' do
     expect(chef_run).to enable_mount('/exports').with(device: '172.31.7.12:/exports', fstype: 'nfs', options: ['rw', 'noauto'], pass: 0)
   end
-    
+
   it 'enables a mount /data' do
     expect(chef_run).to enable_mount('/data').with(device: '172.31.7.12:/exports/data', fstype: 'nfs', options: ['rw', 'noauto'], pass: 0)
   end
@@ -36,7 +40,10 @@ exit 0
 EOF
 
   it 'renders the file /etc/rc.local with content' do
-    expect(chef_run).to render_file('/etc/rc.local').with_content(mount)  
+    expect(chef_run).to render_file('/etc/rc.local').with_content(mount)
   end
-         
+
+  it 'creates firewall rule to open nfs port' do
+    expect(chef_run).to create_firewall_rule('nfs port').with_port(2049)
+  end
 end

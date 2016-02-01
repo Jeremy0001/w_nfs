@@ -1,3 +1,6 @@
+[submodule "test/fixtures/roles"]
+	path = test/fixtures/roles
+	url = https://github.com/haapp/serverspec-roles.git
 [submodule "test/integration/test_w_nfs"]
 	path = test/integration/test_w_nfs
 	url = https://github.com/haapp/serverspec-w_nfs.git

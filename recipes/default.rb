@@ -11,6 +11,11 @@ directory node['nfs']['directory'] do
   mode 00777
 end
 
+user 'www-data' do
+  shell '/bin/bash'
+  action :modify
+end
+
 directory node['nfs']['directory'] + node['nfs']['subtree'] do
   owner 'www-data'
   group 'www-data'
